@@ -3,36 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tienda de Arte - Inicio</title>
+    <title>Tienda de Arte Urbano</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* Estilos para la imagen de fondo */
+        /* Estilos para la imagen de fondo y la estructura */
+        body, html {
+            height: 100%;
+            margin: 0;
+            color: #f0f0f0; /* Color claro para el texto general */
+        }
         .bg-cover {
-            background-image: url('https://i.pinimg.com/736x/01/fa/5e/01fa5eb7cd528d1b0cbe04864743d515.jpg'); /* Reemplaza con la URL de tu imagen de fondo */
+            background-image: url('FondoMain.jpg'); /* Ruta local de la imagen */
             background-size: cover;
             background-position: center;
             height: 100vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            color: white;
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+            text-align: center;
+            background-color: black; /* Color de fondo negro */
         }
-        .btn-custom {
-            background-color: rgba(255, 255, 255, 0.8);
-            color: #333;
+        .logo {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #ffffff; /* Color blanco para el logo */
+            margin-bottom: 0.5rem;
+        }
+        .subtitle {
+            font-size: 1.2rem;
+            color: #b0b0b0; /* Color gris claro para el subtítulo */
+            margin-bottom: 2rem;
+        }
+        .nav-links {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .nav-links a {
+            color: #f0f0f0; /* Color claro para los enlaces */
+            margin: 0 1.5rem;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .nav-links a:hover {
+            color: #ff6347; /* Color rojo brillante en hover */
+        }
+        .main-title {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #ffffff; /* Título en blanco */
+        }
+        .description {
+            color: #d3d3d3; /* Gris claro para la descripción */
+            font-size: 1.2rem;
+            margin-top: 0.5rem;
         }
     </style>
 </head>
 <body>
 
-<!-- Hero Section with Background Image -->
+<!-- Sección de fondo con el nombre de la tienda y enlaces -->
 <section class="bg-cover">
-    <div class="text-center">
-        <h1 class="display-1 fw-bold">Tienda de Arte</h1>
-        <p class="lead mb-4">Explora nuestra colección de arte única y exclusiva</p>
-        <a href="index.html" class="btn btn-custom btn-lg">Ir a la Tienda</a>
+    <div class="logo">AU</div>
+    <div class="subtitle">tienda de arte urbano</div>
+    <div class="nav-links">
+        <a href="tienda.html">tienda.</a>
+        <a href="acerca.html">acerca de.</a>
+        <a href="contacto.html">contacto.</a>
+    </div>
+    <div class="mt-5">
+        <h1 class="main-title">obra de arte.</h1>
+        <p class="description">descarga e imprime. lleva el arte callejero a tu casa.</p>
     </div>
 </section>
 
