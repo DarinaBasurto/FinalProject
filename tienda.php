@@ -1,15 +1,25 @@
+<?php
+session_start(); 
+
+
+if (!isset($_SESSION['id_usuario'])) {
+    header("Location: login.php"); 
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tienda de Arte</title>
-    <!-- Bootstrap CSS -->
+    <title>ÉCLAT</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 
-<!-- Navbar -->
+
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
         <a class="navbar-brand" href="#">Tienda de Arte</a>
@@ -25,43 +35,46 @@
                     <a class="nav-link" href="#">Galería</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Contacto</a>
+                    <a class="nav-link" href="contacto.html">Contacto</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Carrito</a>
+                    <a class="nav-link" href="carrito.php">Carrito</a> 
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="logout.php">Cerrar sesión</a> 
                 </li>
             </ul>
         </div>
     </div>
 </nav>
 
-<!-- Hero Section -->
+
 <section class="py-5 text-center bg-light">
     <div class="container">
-        <h1 class="display-4">Bienvenido a nuestra Tienda de Arte</h1>
+        <h1 class="display-4">Bienvenido a Éclat</h1>
         <p class="lead">Descubre y compra obras de arte únicas de artistas talentosos.</p>
-        <a href="#" class="btn btn-primary">Explorar Galería</a>
+        <a href="#" class="btn btn-primary">Explorar Galería.</a>
     </div>
 </section>
 
-<!-- Gallery Section -->
+
 <section class="py-5">
     <div class="container">
-        <h2 class="text-center mb-4">Galería de Arte</h2>
+        <h2 class="text-center mb-4">Galería</h2>
         <div class="row">
-            <!-- Item 1 -->
+  
             <div class="col-md-4">
                 <div class="card">
-                    <img src="https://via.placeholder.com/300" class="card-img-top" alt="Arte 1">
+                    <img src="Bawl.jpg" class="card-img-top" alt="Bawl">
                     <div class="card-body">
-                        <h5 class="card-title">Obra de Arte 1</h5>
-                        <p class="card-text">Descripción breve de la obra de arte.</p>
+                        <h5 class="card-title">Bawl</h5>
+                        <p class="card-text">Marcie Marsh.</p>
                         <p class="card-text"><strong>$100.00</strong></p>
-                        <a href="#" class="btn btn-primary">Agregar al Carrito</a>
+                        <a href="carrito.php" class="btn btn-primary">Agregar al Carrito</a> <!-- Cambié .html a .php -->
                     </div>
                 </div>
             </div>
-            <!-- Item 2 -->
+
             <div class="col-md-4">
                 <div class="card">
                     <img src="https://via.placeholder.com/300" class="card-img-top" alt="Arte 2">
@@ -69,11 +82,11 @@
                         <h5 class="card-title">Obra de Arte 2</h5>
                         <p class="card-text">Descripción breve de la obra de arte.</p>
                         <p class="card-text"><strong>$200.00</strong></p>
-                        <a href="#" class="btn btn-primary">Agregar al Carrito</a>
+                        <a href="carrito.php" class="btn btn-primary">Agregar al Carrito</a> <!-- Cambié .html a .php -->
                     </div>
                 </div>
             </div>
-            <!-- Item 3 -->
+
             <div class="col-md-4">
                 <div class="card">
                     <img src="https://via.placeholder.com/300" class="card-img-top" alt="Arte 3">
@@ -81,7 +94,7 @@
                         <h5 class="card-title">Obra de Arte 3</h5>
                         <p class="card-text">Descripción breve de la obra de arte.</p>
                         <p class="card-text"><strong>$300.00</strong></p>
-                        <a href="#" class="btn btn-primary">Agregar al Carrito</a>
+                        <a href="carrito.php" class="btn btn-primary">Agregar al Carrito</a> <!-- Cambié .html a .php -->
                     </div>
                 </div>
             </div>
@@ -89,7 +102,7 @@
     </div>
 </section>
 
-<!-- Footer -->
+
 <footer class="bg-light py-4">
     <div class="container text-center">
         <p>&copy; 2024 Tienda de Arte. Todos los derechos reservados.</p>
@@ -101,7 +114,7 @@
     </div>
 </footer>
 
-<!-- Bootstrap JS -->
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

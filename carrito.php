@@ -135,7 +135,7 @@
 
     <!-- Botón de pago -->
    <!-- Botón de pago modificado -->
-    <a href="login.html" class="btn btn-checkout mt-3 w-100">Proceder al Pago</a>
+    <a href="pago.html" class="btn btn-checkout mt-3 w-100">Proceder al Pago</a>
 
 
     <!-- Descripción adicional -->
