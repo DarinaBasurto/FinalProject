@@ -24,7 +24,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $codigo_postal = $_POST['codigo_postal'];
     $admin = isset($_POST['admin']) ? 1 : 0;
 
-    // Verificar si el mail ya está en la base de datos.
     $sql_check = "SELECT * FROM usuarios WHERE email = ? LIMIT 1";
     $stmt_check = $conn->prepare($sql_check);
     $stmt_check->bind_param("s", $email);
@@ -34,14 +33,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($result_check->num_rows > 0) {
         $error = "El correo ya está registrado. Intenta con otro.";
     } else {
-        // Insertar el nuevo usuario a la base de datos.
+
         $sql = "INSERT INTO usuarios (nombre_usuario, email, password, fecha_nacimiento, num_tarjeta, codigo_postal, admin)
                 VALUES (?, ?, ?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("ssssiii", $nombre_usuario, $email, $password, $fecha_nacimiento, $num_tarjeta, $codigo_postal, $admin);
 
         if ($stmt->execute()) {
-            // Redirigir a iniciar sesión.
+
             header("Location: login.php");
             exit();
         } else {

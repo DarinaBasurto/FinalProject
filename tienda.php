@@ -1,7 +1,6 @@
 <?php 
 session_start();
 
-// Conexión a la base de datos
 $host = "localhost";
 $user = "root";
 $password = "";
@@ -12,17 +11,6 @@ if ($conn->connect_error) {
     die("Conexión fallida: " . $conn->connect_error);
 }
 
-// Consultar los primeros 3 productos
-$sql = "SELECT id_producto, nombre, descripcion, fotos, precio FROM productos LIMIT 3";
-$result = $conn->query($sql);
-//session_start(); 
-
-
-//if (!isset($_SESSION['id_usuario'])) {
-//    header("Location: login.php"); 
-//    exit();
-//}
-?> 
 
 <!DOCTYPE html>
 <html lang="es">

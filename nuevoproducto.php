@@ -1,18 +1,18 @@
 <?php
 session_start();
 $servername = "localhost";
-$username = "root"; // Cambiar según tu configuración
-$password = ""; // Cambiar según tu configuración
-$database = "TIENDA"; // Cambiar por el nombre de tu base de datos
+$username = "root"; 
+$password = ""; 
+$database = "TIENDA"; 
 
 $conn = new mysqli($servername, $username, $password, $database);
 
-// Verificar la conexión
+
 if ($conn->connect_error) {
     die("Error de conexión: " . $conn->connect_error);
 }
 
-// Procesar el formulario
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nombre = trim($_POST['nombre']);
     $descripcion = trim($_POST['descripcion']);
@@ -21,14 +21,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $fabricante = trim($_POST['fabricante']);
     $origen = trim($_POST['origen']);
 
-    // Manejar imagen subida
+
     if (isset($_FILES['fotos']) && $_FILES['fotos']['error'] == 0) {
-        $fotos = file_get_contents($_FILES['fotos']['tmp_name']); // Obtener contenido binario del archivo
+        $fotos = file_get_contents($_FILES['fotos']['tmp_name']);
     } else {
         $fotos = null;
     }
 
-    // Validar que los campos requeridos no estén vacíos
+
     if ($nombre && $descripcion && $precio && $stock && $fabricante && $origen) {
         $sql = "INSERT INTO productos (nombre, descripcion, fotos, precio, stock, fabricante, origen) 
                 VALUES (?, ?, ?, ?, ?, ?, ?)";

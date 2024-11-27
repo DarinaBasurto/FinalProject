@@ -1,61 +1,58 @@
 <?php
 session_start();
 
-// Conexión a la base de datos
+
 $servername = "localhost";
-$username = "root"; // Cambiar según tu configuración
-$password = ""; // Cambiar según tu configuración
-$database = "TIENDA"; // Cambiar por el nombre de tu base de datos
+$username = "root"; 
+$password = ""; 
+$database = "TIENDA"; 
 
 $conn = new mysqli($servername, $username, $password, $database);
 
-// Verificar la conexión
+
 if ($conn->connect_error) {
     die("Error de conexión: " . $conn->connect_error);
 }
 
-// Verificar si el usuario ha iniciado sesión
+
 if (!isset($_SESSION['id_usuario'])) {
-    // Si no hay sesión iniciada, redirigir a la página de inicio de sesión
+
     header("Location: login.php");
     exit();
 }
 
-// Obtener el ID del usuario desde la sesión
+
 $user_id = $_SESSION['id_usuario'];
 
-// Consultar el valor del atributo admin del usuario
 $sql = "SELECT admin FROM usuarios WHERE id_usuario = ?";
 $stmt = $conn->prepare($sql);
 
 if ($stmt) {
-    $stmt->bind_param("i", $id_usuario);
+    $stmt->bind_param("i", $user_id);
     $stmt->execute();
     $stmt->bind_result($admin);
     $stmt->fetch();
     $stmt->close();
 
-    // Verificar si el usuario es administrador
-    if ($is_admin != 0) {
-        // Si no es administrador, bloquear el acceso
+    if ($admin != 1) {
         echo "<h1>Acceso denegado</h1>";
         echo "<p>No tienes los permisos necesarios para acceder a esta página.</p>";
-        exit(); // Finaliza la ejecución del script
+        exit(); 
     }
 } else {
     echo "Error al preparar la consulta: " . $conn->error;
     exit();
 }
 
-// Si es administrador, el resto del código de la página se ejecutará aquí
+
 echo "<h1>Bienvenido a la página de administración</h1>";
 
-// Verificar la conexión
+
 if ($conn->connect_error) {
     die("Conexión fallida: " . $conn->connect_error);
 }
 
-// Eliminar producto si se recibe el ID
+
 if (isset($_GET['eliminar_id'])) {
     $id_producto = (int)$_GET['eliminar_id'];
     $sql = "DELETE FROM productos WHERE id_producto = ?";
@@ -70,7 +67,6 @@ if (isset($_GET['eliminar_id'])) {
     $stmt->close();
 }
 
-// Consulta para obtener los productos
 $sql = "SELECT id_producto, nombre, descripcion, precio, stock, fabricante, origen FROM productos";
 $result = $conn->query($sql);
 ?>
@@ -153,6 +149,7 @@ $result = $conn->query($sql);
         <?php } ?>
 
         <a href="nuevoproducto.php" class="btn btn-primary">Agregar Nuevo Producto</a>
+        <a href="historial.php" class="btn btn-primary">Ir a historial de compras</a>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
@@ -160,6 +157,6 @@ $result = $conn->query($sql);
 </html>
 
 <?php
-// Cerrar la conexión
+
 $conn->close();
 ?>

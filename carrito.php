@@ -3,25 +3,24 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-session_start(); // Iniciar la sesión
+session_start(); 
 
-// Verificar si el usuario está autenticado
 if (!isset($_SESSION['id_usuario'])) {
-    header("Location: login.php"); // Redirigir al inicio de sesión
+    header("Location: login.php"); 
     exit();
 }
 
-// Obtener el ID del usuario desde la sesión
+
 $id_usuario = $_SESSION['id_usuario'];
 
-$mysqli = new mysqli("localhost", "root", "", "TIENDA"); // Ajusta el nombre de la base de datos
+$mysqli = new mysqli("localhost", "root", "", "TIENDA"); 
 
-// Verificar la conexión
+
 if ($mysqli->connect_error) {
     die("Error de conexión: " . $mysqli->connect_error);
 }
 
-// Verificar si el usuario ya tiene un carrito activo
+
 $carrito_query = "SELECT id_carrito FROM CARRITO WHERE id_usuario = ?";
 $carrito_stmt = $mysqli->prepare($carrito_query);
 $carrito_stmt->bind_param("i", $id_usuario);
@@ -29,61 +28,89 @@ $carrito_stmt->execute();
 $carrito_result = $carrito_stmt->get_result();
 
 if ($carrito_result->num_rows > 0) {
-    // Si el carrito ya existe, obtener el ID del carrito
+ 
     $carrito_row = $carrito_result->fetch_assoc();
     $id_carrito = $carrito_row['id_carrito'];
 } else {
-    // Si el carrito no existe, crear uno nuevo
+
     $create_carrito_query = "INSERT INTO CARRITO (id_usuario) VALUES (?)";
     $create_carrito_stmt = $mysqli->prepare($create_carrito_query);
     $create_carrito_stmt->bind_param("i", $id_usuario);
     $create_carrito_stmt->execute();
-    $id_carrito = $mysqli->insert_id; // Obtener el ID del nuevo carrito
+    $id_carrito = $mysqli->insert_id; 
     $create_carrito_stmt->close();
 }
 
 $carrito_stmt->close();
 
-// Agregar un producto al carrito
+if (isset($_POST['vaciar_carrito'])) {
+    $_SESSION['carrito'] = array(); 
+    echo "<script>alert('El carrito ha sido vaciado.');</script>";
+}
+
+
 if (isset($_GET['id_producto'])) {
     $id_producto = (int)$_GET['id_producto'];
 
-    // Verificar si el producto ya está en el carrito del usuario
-    $query = "SELECT cantidad FROM carrito_productos WHERE id_carrito = ? AND id_producto = ?";
-    $stmt = $mysqli->prepare($query);
-    $stmt->bind_param("ii", $id_carrito, $id_producto);
-    $stmt->execute();
-    $result = $stmt->get_result();
 
-    if ($result->num_rows > 0) {
-        // Si el producto ya existe en el carrito, incrementar la cantidad
-        $row = $result->fetch_assoc();
-        $cantidad = $row['cantidad'] + 1;
+    $stock_query = "SELECT stock FROM productos WHERE id_producto = ?";
+    $stock_stmt = $mysqli->prepare($stock_query);
+    $stock_stmt->bind_param("i", $id_producto);
+    $stock_stmt->execute();
+    $stock_result = $stock_stmt->get_result();
+    
+    if ($stock_result->num_rows > 0) {
+        $stock_row = $stock_result->fetch_assoc();
+        $stock_disponible = $stock_row['stock'];
 
-        $update_query = "UPDATE carrito_productos SET cantidad = ? WHERE id_carrito = ? AND id_producto = ?";
-        $update_stmt = $mysqli->prepare($update_query);
-        $update_stmt->bind_param("iii", $cantidad, $id_carrito, $id_producto);
-        $update_stmt->execute();
-        $update_stmt->close();
+        // Verificar si el producto ya está en el carrito
+        $query = "SELECT cantidad FROM carrito_productos WHERE id_carrito = ? AND id_producto = ?";
+        $stmt = $mysqli->prepare($query);
+        $stmt->bind_param("ii", $id_carrito, $id_producto);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+
+            $row = $result->fetch_assoc();
+            $cantidad_actual = $row['cantidad'];
+
+            if ($cantidad_actual < $stock_disponible) {
+                $cantidad_nueva = $cantidad_actual + 1;
+                $update_query = "UPDATE carrito_productos SET cantidad = ? WHERE id_carrito = ? AND id_producto = ?";
+                $update_stmt = $mysqli->prepare($update_query);
+                $update_stmt->bind_param("iii", $cantidad_nueva, $id_carrito, $id_producto);
+                $update_stmt->execute();
+                $update_stmt->close();
+            } else {
+                echo "<script>alert('No hay suficiente stock para agregar más unidades.');</script>";
+            }
+        } else {
+
+            if ($stock_disponible > 0) {
+                $insert_query = "INSERT INTO carrito_productos (id_carrito, id_producto, cantidad) VALUES (?, ?, 1)";
+                $insert_stmt = $mysqli->prepare($insert_query);
+                $insert_stmt->bind_param("ii", $id_carrito, $id_producto);
+                $insert_stmt->execute();
+                $insert_stmt->close();
+            } else {
+                echo "<script>alert('El producto no está disponible en stock.');</script>";
+            }
+        }
+
+        $stmt->close();
     } else {
-        // Si no existe, insertar el producto en el carrito
-        $insert_query = "INSERT INTO carrito_productos (id_carrito, id_producto, cantidad) VALUES (?, ?, 1)";
-        $insert_stmt = $mysqli->prepare($insert_query);
-        $insert_stmt->bind_param("ii", $id_carrito, $id_producto);
-        $insert_stmt->execute();
-        $insert_stmt->close();
+        echo "<script>alert('Error: el producto no existe o ha sido eliminado.');</script>";
     }
 
-    $stmt->close();
 
-    // Redirigir para evitar reenvíos del formulario
     header("Location: carrito.php");
     exit();
 }
 
-// Eliminar un producto del carrito
-if (isset($_GET['eliminar_id'])) {
-    $id_producto = (int)$_GET['eliminar_id'];
+
+if (isset($_GET['eliminar_id_producto'])) {
+    $id_producto = (int)$_GET['eliminar_id_producto'];
 
     $delete_query = "DELETE FROM carrito_productos WHERE id_carrito = ? AND id_producto = ?";
     $delete_stmt = $mysqli->prepare($delete_query);
@@ -91,7 +118,7 @@ if (isset($_GET['eliminar_id'])) {
     $delete_stmt->execute();
     $delete_stmt->close();
 
-    // Redirigir para evitar reenvíos del formulario
+
     header("Location: carrito.php");
     exit();
 }
@@ -111,7 +138,7 @@ if (isset($_GET['eliminar_id'])) {
 
     <?php
     $cart_query = "
-        SELECT cp.id_producto, cp.cantidad, p.nombre 
+        SELECT cp.id_producto, cp.cantidad, p.nombre, p.precio, p.stock 
         FROM carrito_productos cp 
         INNER JOIN productos p ON cp.id_producto = p.id_producto 
         WHERE cp.id_carrito = ?";
@@ -129,6 +156,7 @@ if (isset($_GET['eliminar_id'])) {
             <tr>
                 <th>ID Producto</th>
                 <th>Nombre del Producto</th>
+                <th>Precio</th>
                 <th>Cantidad</th>
                 <th>Acciones</th>
             </tr>
@@ -138,23 +166,24 @@ if (isset($_GET['eliminar_id'])) {
          <tr>
             <td><?= htmlspecialchars($row['id_producto']); ?></td>
             <td><?= htmlspecialchars($row['nombre']); ?></td>
-            <td><?= htmlspecialchars($row['cantidad']); ?></td>
+            <td>$<?= number_format($row['precio'], 2); ?></td>
             <td>
-                <a href="carrito.php?eliminar_id=<?= $row['id_producto']; ?>" class="btn btn-danger btn-sm">Eliminar</a>
+                <div class="d-flex">
+                    <a href="carrito.php?accion=disminuir&id_producto=<?= $row['id_producto']; ?>" class="btn btn-warning btn-sm">-</a>
+                    <input type="text" class="form-control text-center" value="<?= $row['cantidad']; ?>" readonly style="width: 50px;">
+                    <a href="carrito.php?accion=incrementar&id_producto=<?= $row['id_producto']; ?>" class="btn btn-success btn-sm">+</a>
+                </div>
             </td>
+            <td><a href="carrito.php?eliminar_id_producto=<?= $row['id_producto']; ?>" class="btn btn-danger btn-sm">Eliminar</a></td>
          </tr>
-    <?php endwhile; ?>
-</tbody>
-</table>
-        <a href="galeria.php" class="btn btn-primary">Seguir Comprando</a>
-        <div class="mt-3">
-            <a href="pago.php" class="btn btn-success">Proceder al pago</a>
-        </div>
-    <?php endif;
-
-    $cart_stmt->close();
-    $mysqli->close();
-    ?>
+        <?php endwhile; ?>
+        </tbody>
+    </table>
+    <a href="galeria.php" class="btn btn-primary">Volver a Productos</a>
+    <a href="pago.php" class="btn btn-primary">Proceder al pago</a>
+    <?php endif; ?>
+    <form method="post" action="">
+        </form>
 </div>
 </body>
 </html>

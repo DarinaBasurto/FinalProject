@@ -1,5 +1,5 @@
 <?php
-// Conexión a la base de datos
+
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -7,12 +7,12 @@ $dbname = "TIENDA";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Verificar la conexión
+
 if ($conn->connect_error) {
     die("Conexión fallida: " . $conn->connect_error);
 }
 
-// Consulta para obtener los productos
+
 $sql = "SELECT id_producto, nombre, descripcion, fotos, precio, stock, fabricante, origen FROM productos";
 $result = $conn->query($sql);
 ?>
@@ -67,7 +67,6 @@ $result = $conn->query($sql);
                         ?>
                         <div class="col-md-4 mb-4">
                             <div class="card">
-                                <!-- Mostrar la imagen del producto -->
                                 <?php if (!empty($row['fotos'])) { ?>
                                     <img src="data:image/jpeg;base64,<?= base64_encode($row['fotos']); ?>" class="card-img-top" alt="<?= htmlspecialchars($row['nombre']); ?>">
                                 <?php } else { ?>
