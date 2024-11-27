@@ -1,21 +1,15 @@
 <?php
 session_start();
+$servername = "localhost";
+$username = "root"; // Cambiar según tu configuración
+$password = ""; // Cambiar según tu configuración
+$database = "TIENDA"; // Cambiar por el nombre de tu base de datos
 
-// Verificar si el usuario es un organizador
-//if (!isset($_SESSION['id_usuario']) || $_SESSION['admin'] !== 0) {
-    //header("Location: login.html");
-    //exit();
-//}
+$conn = new mysqli($servername, $username, $password, $database);
 
-// Configuración de conexión a la base de datos
-$host = "localhost";
-$user = "root";
-$password = "";
-$dbname = "TIENDA";
-
-$conn = new mysqli($host, $user, $password, $dbname);
+// Verificar la conexión
 if ($conn->connect_error) {
-    die("Error en la conexión: " . $conn->connect_error);
+    die("Error de conexión: " . $conn->connect_error);
 }
 
 // Procesar el formulario

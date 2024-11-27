@@ -1,11 +1,54 @@
 <?php
+session_start();
+
 // Conexión a la base de datos
 $servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "TIENDA"; // Cambia esto por el nombre de tu base de datos
+$username = "root"; // Cambiar según tu configuración
+$password = ""; // Cambiar según tu configuración
+$database = "TIENDA"; // Cambiar por el nombre de tu base de datos
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+$conn = new mysqli($servername, $username, $password, $database);
+
+// Verificar la conexión
+if ($conn->connect_error) {
+    die("Error de conexión: " . $conn->connect_error);
+}
+
+// Verificar si el usuario ha iniciado sesión
+if (!isset($_SESSION['id_usuario'])) {
+    // Si no hay sesión iniciada, redirigir a la página de inicio de sesión
+    header("Location: login.php");
+    exit();
+}
+
+// Obtener el ID del usuario desde la sesión
+$user_id = $_SESSION['id_usuario'];
+
+// Consultar el valor del atributo admin del usuario
+$sql = "SELECT admin FROM usuarios WHERE id_usuario = ?";
+$stmt = $conn->prepare($sql);
+
+if ($stmt) {
+    $stmt->bind_param("i", $id_usuario);
+    $stmt->execute();
+    $stmt->bind_result($admin);
+    $stmt->fetch();
+    $stmt->close();
+
+    // Verificar si el usuario es administrador
+    if ($is_admin != 0) {
+        // Si no es administrador, bloquear el acceso
+        echo "<h1>Acceso denegado</h1>";
+        echo "<p>No tienes los permisos necesarios para acceder a esta página.</p>";
+        exit(); // Finaliza la ejecución del script
+    }
+} else {
+    echo "Error al preparar la consulta: " . $conn->error;
+    exit();
+}
+
+// Si es administrador, el resto del código de la página se ejecutará aquí
+echo "<h1>Bienvenido a la página de administración</h1>";
 
 // Verificar la conexión
 if ($conn->connect_error) {

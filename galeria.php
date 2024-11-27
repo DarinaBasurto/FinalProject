@@ -80,10 +80,11 @@ $result = $conn->query($sql);
                                     <p class="card-text"><small>Fabricante: <?= htmlspecialchars($row['fabricante']); ?></small></p>
                                     <p class="card-text"><small>Origen: <?= htmlspecialchars($row['origen']); ?></small></p>
                                     <?php if ($row['stock'] > 0) { ?>
-                                        <a href="carrito.php?id_producto=<?= $row['id_producto']; ?>" class="btn btn-primary">Agregar al Carrito</a>
+                                    <a href="carrito.php?id_producto=<?= $row['id_producto']; ?>" class="btn btn-primary">Agregar al Carrito</a>
                                     <?php } else { ?>
-                                        <button class="btn btn-secondary" disabled>Agotado</button>
+                                      <button class="btn btn-secondary" disabled>Agotado</button>
                                     <?php } ?>
+
                                 </div>
                             </div>
                         </div>
