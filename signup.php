@@ -17,6 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $fecha_nacimiento = $_POST['fecha_nacimiento'];
     $num_tarjeta = $_POST['num_tarjeta'];
     $codigo_postal = $_POST['codigo_postal'];
+    $is_admin = isset($_POST['is_admin']) ? 1 : 0;
 
     // Verificar si el mail ya está en la base de datos.
     $sql_check = "SELECT * FROM usuarios WHERE email = ? LIMIT 1";
@@ -32,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $sql = "INSERT INTO usuarios (nombre_usuario, email, password, fecha_nacimiento, num_tarjeta, codigo_postal)
                 VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ssssii", $nombre_usuario, $email, $password, $fecha_nacimiento, $num_tarjeta, $codigo_postal);
+        $stmt->bind_param("ssssii", $nombre_usuario, $email, $password, $fecha_nacimiento, $num_tarjeta, $codigo_postal, $admin);
 
         if ($stmt->execute()) {
             // Redirigir a iniciar sesión.
@@ -95,6 +96,10 @@ $conn->close();
             <div class="mb-3">
                 <label for="codigo_postal" class="form-label">Código Postal</label>
                 <input type="number" class="form-control" id="codigo_postal" name="codigo_postal" required>
+            </div>
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="is_admin" name="is_admin">
+                <label class="form-check-label" for="is_admin">Es Administrador</label>
             </div>
             <button type="submit" class="btn btn-primary w-100">Crear Cuenta</button>
             <?php if (isset($error)) { ?>
